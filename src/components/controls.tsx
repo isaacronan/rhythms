@@ -1,5 +1,4 @@
-import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
-import { useOrchestration } from "./orchestration-service";
+import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
 import { useSamples } from "./sample-service";
 import { useAppDispatch, useAppState } from "./state-service";
 import { TrackControl } from "./track-control";
@@ -8,14 +7,12 @@ export const Controls = () => {
     const { samples } = useSamples();
     const state = useAppState();
     const dispatch = useAppDispatch();
-    const { play, stop } = useOrchestration();
 
     return (
         <div>
             <div>{JSON.stringify(state)}</div>
             <div>
-                <button onClick={play}>play</button>
-                <button onClick={stop}>stop</button>
+                <button onClick={() => dispatch<TogglePlayAction>({ type: 'toggle-play' })}>{state.isPlaying ? 'stop' : 'play'}</button>
             </div>
             <div>
                 <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>dec</button>

@@ -1,5 +1,5 @@
 import { defaultTrack } from ".";
-import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
+import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
 import { createReducerRegistry, rhythmRepair } from "../utils";
 
 const registry = createReducerRegistry();
@@ -65,6 +65,13 @@ registry.register<ChangeTrackOnsetsAction>('change-track-onsets', (action, state
             ...track,
             numStepsOn: track.numStepsOn + action.delta
         }) : track)
+    };
+});
+
+registry.register<TogglePlayAction>('toggle-play', (action, state) => {
+    return {
+        ...state,
+        isPlaying: !state.isPlaying
     };
 });
 

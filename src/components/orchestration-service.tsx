@@ -4,8 +4,6 @@ import { ILoop, IOrchestrationControls } from "../types";
 import { PropsWithChildren, createContext, useContext, useEffect, useMemo } from "react";
 import { useAppState } from "./state-service";
 
-const OrchestrationContext = createContext<IOrchestrationControls | null>(null);
-
 export const OrchestrationService = (props: PropsWithChildren) => {
     const { start, stop, patch } = useLoop();
     const { play } = useSamples();
@@ -32,15 +30,17 @@ export const OrchestrationService = (props: PropsWithChildren) => {
         patch(loop);
     }, [loop]);
 
+    useEffect(() => {
+        if (state.isPlaying) {
+            start(loop);
+        } else {
+            stop();
+        }
+    }, [state.isPlaying])
+
     return (
-        <OrchestrationContext.Provider value={{ play: () => start(loop), stop: () => stop() }}>
+        <>
             {props.children}
-        </OrchestrationContext.Provider>
+        </>
     );
 };
-
-export const useOrchestration = () => {
-    const orchestrationControls = useContext(OrchestrationContext)!;
-
-    return orchestrationControls;
-}

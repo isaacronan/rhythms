@@ -34,3 +34,5 @@ export interface ChangeTrackOnsetsAction extends Action<'change-track-onsets'> {
     trackIndex: number;
     delta: number;
 }
+
+export interface TogglePlayAction extends Action<'toggle-play'> {}
