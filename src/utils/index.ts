@@ -19,4 +19,3 @@ export const rotate: (rhythm: Rhythm, numRotations: number) => Rhythm = (rhythm,
     return b.concat(a);
 };
 
-export const sleep = (numMilliseconds: number) => new Promise(resolve => setTimeout(resolve, numMilliseconds));

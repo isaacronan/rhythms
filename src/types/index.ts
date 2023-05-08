@@ -1,32 +1,27 @@
 export type Rhythm = boolean[];
 
-export interface Sample {
+export interface ISample {
     sampleName: string;
     assetPath: string;
 };
+
+export interface ISampleControls {
+    play: (sampleNames: string[]) => void;
+    samples: ISample[];
+}
 
 export interface Track {
     rhythm: Rhythm;
     sampleName: string;
 }
 
-export interface Loop {
-    beats: Beat[];
-    bpm: number;
-}
+export interface ILoop {
+    steps: (() => void)[];
+    stepDuration: number;
+};
 
-export interface Beat {
-    sampleNames: string[];
-}
-
-export interface SampleControls {
-    play: (beat: Beat) => void;
-    samples: Sample[];
-}
-
-export interface LoopControls {
-    play: (beat: Loop) => void;
-    patch: (beat: Loop) => void;
+export interface ILoopControls {
+    play: (loop: ILoop) => void;
+    patch: (loop: ILoop) => void;
     stop: () => void;
-    progress: number;
 }

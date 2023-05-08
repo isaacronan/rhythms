@@ -1,57 +1,60 @@
-import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Loop, LoopControls } from "../types";
-import { useSampleControls } from "./sample-service";
-import { sleep } from "../utils";
+import { PropsWithChildren, createContext, useContext, useRef } from "react";
+import { ILoop, ILoopControls } from "../types";
 
-const LoopContext = createContext<LoopControls | null>(null);
+const LoopContext = createContext<ILoopControls | null>(null);
 
 export const LoopService = (props: PropsWithChildren) => {
-    const [progress, setProgress] = useState(0);
-    const beatInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-    const sampleControls = useSampleControls();
-    const playSamples = useRef(sampleControls.play);
-    const currentLoop = useRef<Loop | null>(null);
+    const stepInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+    const currentLoop = useRef<ILoop | null>(null);
+    const currentStep = useRef<number>(0);
 
-    useEffect(() => {
-        playSamples.current = sampleControls.play;
-    }, [sampleControls])
-
-    const play = (loop: Loop) => {
-        currentLoop.current = loop;
-        const beatDuration = 60 / currentLoop.current.bpm;
-        let curBeatNumber = 0;
-        playSamples.current(currentLoop.current.beats[curBeatNumber]);
-        setProgress((curBeatNumber + 1) / currentLoop.current.beats.length)
-        curBeatNumber = (curBeatNumber + 1) % currentLoop.current.beats.length;
-        beatInterval.current = setInterval(() => {
-            if (curBeatNumber >= currentLoop.current!.beats.length) {
-                curBeatNumber = 0;
-            } else {
-                playSamples.current(currentLoop.current!.beats[curBeatNumber]);
-                setProgress((curBeatNumber + 1) / currentLoop.current!.beats.length)
-                curBeatNumber = (curBeatNumber + 1) % currentLoop.current!.beats.length;
-            }
-        }, 1000 * beatDuration);
+    const executeStep = () => {
+        currentLoop.current!.steps[currentStep.current]();
+        currentStep.current = (currentStep.current + 1) % currentLoop.current!.steps.length;
     };
 
-    const patch = (loop: Loop) => {
+    const resetStepInterval = () => {
+        clearInterval(stepInterval.current!);
+        stepInterval.current = setInterval(() => {
+            if (currentStep.current >= currentLoop.current!.steps.length) {
+                currentStep.current = 0;
+            }
+            console.log(currentStep.current);
+            executeStep();
+        }, currentLoop.current!.stepDuration);
+    };
+
+    const play = (loop: ILoop) => {
         currentLoop.current = loop;
+
+        if (stepInterval.current === null) {
+            executeStep();
+            resetStepInterval();
+        }
+    };
+
+    const patch = (loop: ILoop) => {
+        currentLoop.current = loop;
+        if (stepInterval.current !== null && loop.stepDuration !== currentLoop.current.stepDuration) {
+            resetStepInterval();
+        }
     };
 
     const stop = () => {
-        clearInterval(beatInterval.current!);
-        beatInterval.current = null;
+        clearInterval(stepInterval.current!);
+        stepInterval.current = null;
+        currentStep.current = 0;
     };
 
     return (
-        <LoopContext.Provider value={{ play, stop, progress, patch }}>
+        <LoopContext.Provider value={{ play, stop, patch }}>
             {props.children}
         </LoopContext.Provider>
     );
 };
 
 export const useLoop = () => {
-    const { play, stop, progress, patch } = useContext(LoopContext)!;
+    const loopControls = useContext(LoopContext)!;
 
-    return { play, stop, progress, patch };
+    return loopControls;
 }

@@ -1,18 +1,18 @@
 import { useLoop } from "./loop-service";
 import { useSamples } from "./sample-service";
-import { Loop, Track } from "../types";
+import { ILoop, Track } from "../types";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { euclideanRhythm } from "../utils";
 
 export const Controls = () => {
-    const { play, stop, progress, patch } = useLoop();
-    const samples = useSamples();
+    const { play, stop, patch } = useLoop();
+    const { play: playSamples, samples } = useSamples();
     const bars = useRef(16);
     const defaultTrack = () => ({ sampleName: 'kick', rhythm: new Array(bars.current).fill(true) });
     const [tracks, setTracks] = useState<Track[]>([defaultTrack()]);
 
-    const loopConfig = useMemo<Loop>(() => {
-        const beats = [];
+    const loopConfig = useMemo<ILoop>(() => {
+        const steps = [];
         for (let i = 0; i < bars.current; i++) {
             const sampleNames: string[] = [];
             tracks.forEach(track => {
@@ -20,11 +20,11 @@ export const Controls = () => {
                     sampleNames.push(track.sampleName);
                 }
             })
-            beats.push({ sampleNames });
+            steps.push(() => playSamples(sampleNames));
         }
         return {
-            beats,
-            bpm: 200
+            steps,
+            stepDuration: 1000 * 60 / 200
         }
     }, [tracks]);
 
@@ -73,7 +73,6 @@ export const Controls = () => {
             <div>
                 <button onClick={() => setTracks(prev => ([...prev, defaultTrack()]))}>add track</button>
             </div>
-            <p>progress: {progress}</p>
             <div>
                 <input type="number" value={bars.current} onChange={handleBars}/>
             </div>
