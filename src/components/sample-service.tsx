@@ -3,27 +3,43 @@ import { ISample, ISampleControls } from "../types";
 
 const SampleContext = createContext<ISampleControls | null>(null);
 
+const BUFFER = 1;
+
+const createBufferedSamples = (samples: ISample[]) => samples.map(sample => new Array(BUFFER).fill(null).map(() => sample)).reduce((acc, cur) => ([...acc, ...cur]));
+
 export const SampleService = (props: PropsWithChildren<{ samples: ISample[] }>) => {
-    const [audioElementSamples, setAudioElementSamples] = useState<ISample[]>([]);
+    const [audioElementSamples, setAudioElementSamples] = useState<ISample[]>(createBufferedSamples(props.samples));
     const audioElementRefs = useRef<HTMLMediaElement[]>([]);
-    const audioElementSampleRefs = useRef<ISample[]>([]);
+    const audioElementSampleRefs = useRef<ISample[]>(createBufferedSamples(props.samples));
+
+    const playIndex = (index: number) => {
+        setTimeout(() => audioElementRefs.current[index].play());
+    };
 
     const play = (sampleNames: string[]) => {
         sampleNames.forEach(sampleName => {
-            const idleAudioElementIndex = audioElementSampleRefs.current.findIndex((sample, index) => {
-                if (sample.sampleName !== sampleName) return false;
+            const idleAudioElementIndices = audioElementSampleRefs.current.map((sample, index) => {
+                if (sample.sampleName !== sampleName) return null;
                 const element = audioElementRefs.current[index];
-                if (element === undefined) return false;
-                return !(!element.paused && element.duration > 0);
-            });
-            
-            if (idleAudioElementIndex !== -1) {
-                audioElementRefs.current[idleAudioElementIndex].play();
-            } else {
+                if (element === undefined) return null;
+                if (!element.paused && element.duration > 0) return null;
+                return index;
+            }).filter(index => index !== null);
+
+            if (idleAudioElementIndices.length <= BUFFER) {
                 const sample = props.samples.find(sample => sample.sampleName === sampleName);
-                setAudioElementSamples(prev => ([...prev, sample!]));
-                audioElementSampleRefs.current.push(sample!);
+                for (let i = 0; i <= BUFFER - idleAudioElementIndices.length; i++) {
+                    setAudioElementSamples(prev => ([...prev, sample!]));
+                    audioElementSampleRefs.current.push(sample!);
+                }
             }
+            
+            if (idleAudioElementIndices.length > 0) {
+                audioElementRefs.current[idleAudioElementIndices[0]!].play()
+            } else {
+                playIndex(audioElementSampleRefs.current.length - 1);
+            }
+            
         });
     };
 
@@ -34,7 +50,7 @@ export const SampleService = (props: PropsWithChildren<{ samples: ISample[] }>) 
             {props.children}
             <div style={{ display: 'none' }}>
                 {audioElementSamples.map((sample, index) => (
-                    <audio autoPlay={true} ref={node => {
+                    <audio ref={node => {
                         if (node) {
                             audioElementRefs.current[index] = node;
                         } else {
