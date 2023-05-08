@@ -14,7 +14,7 @@ export const Tracks = () => {
     return (
         <>
             {state.tracks.map((track, index) => (
-                <div className="mb-[1.0rem]">
+                <div key={index} className="mb-[1.0rem]">
                     <div className="mb-[1.0rem]">
                         <TrackControl
                             key={index}

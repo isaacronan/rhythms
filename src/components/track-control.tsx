@@ -14,7 +14,7 @@ export const TrackControl = (props: ITrackControlProps) => {
             </button>
             <select className="px-[0.5rem] py-[0.5rem] grow ml-[1.0rem] border-[0.1rem] border-[#000000] rounded-[0.4rem] px-[1.0rem] appearance-none" onChange={e => onChangeSample(e.target.value)} name="" id="" value={selectedSampleName}>
                 {samples.map(({ sampleName }) => (
-                    <option value={sampleName}>{sampleName}</option>
+                    <option key={sampleName} value={sampleName}>{sampleName}</option>
                 ))}
             </select>
             <div className="ml-[1.0rem]">

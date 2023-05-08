@@ -50,7 +50,7 @@ export const SampleService = (props: PropsWithChildren<{ samples: ISample[] }>) 
             {props.children}
             <div style={{ display: 'none' }}>
                 {audioElementSamples.map((sample, index) => (
-                    <audio ref={node => {
+                    <audio key={index} ref={node => {
                         if (node) {
                             audioElementRefs.current[index] = node;
                         } else {
