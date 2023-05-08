@@ -16,6 +16,7 @@ export interface ITrack {
     sampleName: string;
     isMuted: boolean;
     stepOverrideIndices: number[];
+    rhythm: Rhythm;
 }
 
 export interface ITrackControlProps {

@@ -1,13 +1,15 @@
 import { defaultTrack } from ".";
 import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
-import { createReducerRegistry } from "../utils";
+import { createReducerRegistry, rhythmRepair } from "../utils";
 
 const registry = createReducerRegistry();
 
 registry.register<ChangeNumBeatsAction>('change-num-beats', (action, state) => {
+    const numBeats = state.numBeats + action.delta;
     return {
         ...state,
-        numBeats: state.numBeats + action.delta
+        numBeats,
+        tracks: state.tracks.map(rhythmRepair(numBeats))
     };
 });
 
@@ -28,7 +30,7 @@ registry.register<ToggleTrackMuteAction>('toggle-track-mute', (action, state) =>
 registry.register<AddTrackAction>('add-track', (action, state) => {
     return {
         ...state,
-        tracks: [...state.tracks, defaultTrack]
+        tracks: [...state.tracks, rhythmRepair(state.numBeats)(defaultTrack)]
     };
 });
 
@@ -49,14 +51,20 @@ registry.register<ChangeTrackSampleAction>('change-track-sample', (action, state
 registry.register<ChangeTrackRotationAction>('change-track-rotation', (action, state) => {
     return {
         ...state,
-        tracks: state.tracks.map((track, index) => index === action.trackIndex ? { ...track, numRotations: (track.numRotations + state.numBeats + action.delta) % state.numBeats } : track)
+        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats)({
+            ...track,
+            numRotations: (track.numRotations + state.numBeats + action.delta) % state.numBeats
+        }) : track)
     };
 });
 
 registry.register<ChangeTrackOnsetsAction>('change-track-onsets', (action, state) => {
     return {
         ...state,
-        tracks: state.tracks.map((track, index) => index === action.trackIndex ? { ...track, numStepsOn: track.numStepsOn + action.delta } : track)
+        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats)({
+            ...track,
+            numStepsOn: track.numStepsOn + action.delta
+        }) : track)
     };
 });
 

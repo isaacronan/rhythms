@@ -1,4 +1,4 @@
-import { IAppState, Rhythm } from "../types";
+import { IAppState, ITrack, Rhythm } from "../types";
 import { Action } from "../types/actions";
 
 export const euclideanRhythm: (stepsOn: number, stepsTotal: number) => Rhythm = (stepsOn, stepsTotal) => {
@@ -34,4 +34,15 @@ export const createReducerRegistry = () => {
     };
 
     return { register, reducer };
+};
+
+export const rhythmRepair: (numBeats: number) => (track: ITrack) => ITrack = (numBeats) => (track) => {
+    const numStepsOn = Math.min(numBeats, track.numStepsOn);
+    const numRotations = Math.min(track.numRotations, numBeats) % numBeats;
+    return {
+        ...track,
+        numRotations,
+        numStepsOn,
+        rhythm: rotate(euclideanRhythm(numStepsOn, numBeats), numRotations)
+    }
 };

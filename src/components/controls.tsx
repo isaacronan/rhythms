@@ -1,13 +1,12 @@
 import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
 import { useOrchestration } from "./orchestration-service";
 import { useSamples } from "./sample-service";
-import { useAppComputed, useAppDispatch, useAppState } from "./state-service";
+import { useAppDispatch, useAppState } from "./state-service";
 import { TrackControl } from "./track-control";
 
 export const Controls = () => {
     const { samples } = useSamples();
     const state = useAppState();
-    const computed = useAppComputed();
     const dispatch = useAppDispatch();
     const { play, stop } = useOrchestration();
 
@@ -40,8 +39,8 @@ export const Controls = () => {
                     isMuted={track.isMuted}
                     samples={samples}
                     selectedSampleName={track.sampleName}
-                    effectiveRhythm={computed.rhythms[index]}
-                    euclideanRhythm={computed.rhythms[index]}
+                    effectiveRhythm={track.rhythm}
+                    euclideanRhythm={track.rhythm}
                 />
             ))}
             <div>
