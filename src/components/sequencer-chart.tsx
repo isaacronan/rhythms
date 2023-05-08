@@ -28,7 +28,12 @@ export const SequencerChart = (props: ISequencerChartProps) => {
     const [maxStepsPerRow, setMaxStepsPerRow] = useState(0);
 
     const numBeatsPerRow = useMemo(() => {
-        return Math.max(Math.floor(Math.min(maxStepsPerRow, props.numBeats * props.beatDivision) / props.beatDivision), 1)
+        const initial = Math.max(Math.floor(Math.min(maxStepsPerRow, props.numBeats * props.beatDivision) / props.beatDivision), 1);
+        let adjusted = initial;
+        while (props.numBeats % adjusted !== 0) {
+            adjusted -= 1;
+        }
+        return adjusted;
     }, [maxStepsPerRow, props.beatDivision, props.numBeats]);
     
     const numStepsPerRow = useMemo(() => {
