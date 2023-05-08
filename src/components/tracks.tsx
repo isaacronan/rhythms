@@ -1,4 +1,5 @@
 import { AddTrackAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
+import { colorToRgb } from "../utils";
 import { useLoop } from "./loop-service";
 import { useSamples } from "./sample-service";
 import { SequencerChart } from "./sequencer-chart";
@@ -33,14 +34,14 @@ export const Tracks = () => {
                         />
                     </div>
                     <SequencerChart
-                        currentStep={state.isPlaying ? currentStep : null}
+                        currentStep={state.isPlaying ? currentStep : null} color={colorToRgb(track.color)}
                         effectiveRhythm={track.rhythm} euclideanRhythm={track.rhythm}
                         numBeats={state.numBeats} beatDivision={state.beatDivision}
                     />
                 </div>
             ))}
-            <div className="flex flex-col center text-[2.0rem]">
-                <button onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>
+            <div className="flex flex-col center text-[3.0rem]">
+                <button className="text-[var(--er-green)]" onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>
                     <span className="fa-solid fa-circle-plus"></span>
                 </button>
             </div>

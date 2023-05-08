@@ -1,6 +1,6 @@
-import { defaultTrack } from ".";
+import { createDefaultTrack } from ".";
 import { AddTrackAction, ChangeBeatDivisionAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
-import { createReducerRegistry, rhythmRepair } from "../utils";
+import { createReducerRegistry, generateColor, rhythmRepair } from "../utils";
 
 const registry = createReducerRegistry();
 
@@ -30,6 +30,7 @@ registry.register<ChangeBeatDivisionAction>('change-beat-division', (action, sta
 });
 
 registry.register<ToggleTrackMuteAction>('toggle-track-mute', (action, state) => {
+    console.log('mute')
     return {
         ...state,
         tracks: state.tracks.map((track, index) => index === action.trackIndex ? { ...track, isMuted: !track.isMuted } : track)
@@ -39,7 +40,7 @@ registry.register<ToggleTrackMuteAction>('toggle-track-mute', (action, state) =>
 registry.register<AddTrackAction>('add-track', (action, state) => {
     return {
         ...state,
-        tracks: [...state.tracks, rhythmRepair(state.numBeats * state.beatDivision)(defaultTrack)]
+        tracks: [...state.tracks, rhythmRepair(state.numBeats * state.beatDivision)(createDefaultTrack())]
     };
 });
 

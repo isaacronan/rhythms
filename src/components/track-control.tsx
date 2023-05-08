@@ -31,7 +31,7 @@ export const TrackControl = (props: ITrackControlProps) => {
                     onPos={onRotateRight}
                 />
             </div>
-            <button className="mx-[1.0rem]" onClick={onDelete}>
+            <button className="text-[var(--er-red)] mx-[1.0rem]" onClick={onDelete}>
                 <span className="fa-solid fa-circle-xmark"></span>
             </button>
         </div>

@@ -1,4 +1,4 @@
-import { IAppState, ITrack, Rhythm } from "../types";
+import { Color, IAppState, ITrack, Rhythm } from "../types";
 import { Action } from "../types/actions";
 
 export const euclideanRhythm: (stepsOn: number, stepsTotal: number) => Rhythm = (stepsOn, stepsTotal) => {
@@ -46,3 +46,24 @@ export const rhythmRepair: (numBeats: number) => (track: ITrack) => ITrack = (nu
         rhythm: rotate(euclideanRhythm(numStepsOn, numBeats), numRotations)
     }
 };
+
+export const colorToRgb: (color: Color) => string = ([r, g, b]) => `rgb(${r},${g},${b})`;
+
+const colorGenerator: (bounds: [number, number]) => () => Color = (bounds) => {
+    const PRIME = 2 ** 7 - 1;
+    const seed = Math.floor(Math.random() * 256);
+    const [lower, upper] = bounds;
+    const range = upper - lower;
+    const delta = Math.floor(range / 3);
+    let currentColor = [seed, lower + ((seed + delta) % range), lower + ((seed + 2 * delta) % range)] as Color;
+    let cursor = 0;
+
+    return () => {
+        const i = cursor % 3;
+        currentColor[i] = (currentColor[i] + PRIME) % 256;
+        cursor += 1;
+        return [...currentColor];
+    };
+};
+
+export const generateColor = colorGenerator([0, 256]);

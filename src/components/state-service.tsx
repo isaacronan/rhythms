@@ -2,8 +2,7 @@ import { PropsWithChildren, createContext, useContext, useMemo, useReducer } fro
 import { appReducer } from "../state/reducers";
 import { initialAppState } from "../state";
 import { Action } from "../types/actions";
-import { IAppState, Rhythm } from "../types";
-import { euclideanRhythm, rotate } from "../utils";
+import { IAppState } from "../types";
 
 const StateContext = createContext<{
     state: IAppState,

@@ -1,4 +1,5 @@
 export type Rhythm = boolean[];
+export type Color = [r: number, g: number, b: number];
 
 export interface ISample {
     sampleName: string;
@@ -17,6 +18,7 @@ export interface ITrack {
     isMuted: boolean;
     stepOverrideIndices: number[];
     rhythm: Rhythm;
+    color: Color;
 }
 
 export interface ITrackControlProps {
@@ -40,6 +42,7 @@ export interface ISequencerChartProps {
     numBeats: number;
     beatDivision: number;
     currentStep: number | null;
+    color: string;
 }
 
 export interface ILoop {
