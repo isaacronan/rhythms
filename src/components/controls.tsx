@@ -13,28 +13,39 @@ export const Controls = () => {
 
     return (
         <div>
-            <div>{JSON.stringify(state)}</div>
-            <div>{currentStep}</div>
-            <div>
-                <button onClick={() => dispatch<TogglePlayAction>({ type: 'toggle-play' })}>{state.isPlaying ? 'stop' : 'play'}</button>
+            <div className="text-[4.0rem]">
+                <button onClick={() => dispatch<TogglePlayAction>({ type: 'toggle-play' })}>
+                    <span className={`fa-solid fa-${state.isPlaying ? 'stop' : 'play'}`}></span>
+                </button>
             </div>
-            <div>
-                <div>beats</div>
-                <button disabled={state.numBeats === 1} onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>dec</button>
-                <span>{state.numBeats}</span>
-                <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: 1})}>inc</button>
-            </div>
-            <div>
-                <div>division</div>
-                <button disabled={state.beatDivision === 1} onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: -1})}>dec</button>
-                <span>{state.beatDivision}</span>
-                <button onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: 1})}>inc</button>
-            </div>
-            <div>
-                <div>bpm</div>
-                <button disabled={state.numBeatsPerMinute === 1} onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: -1 })}>dec</button>
-                <span>{state.numBeatsPerMinute}</span>
-                <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: 1 })}>inc</button>
+            <div className="flex text-[2.0rem]">
+                <div>
+                    <button disabled={state.numBeats === 1} onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>
+                        <span className="fa-solid fa-minus"></span>
+                    </button>
+                    <span>{state.numBeats}</span>
+                    <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: 1})}>
+                        <span className="fa-solid fa-plus"></span>
+                    </button>
+                </div>
+                <div>
+                    <button disabled={state.numBeatsPerMinute === 1} onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: -1 })}>
+                        <span className="fa-solid fa-minus"></span>
+                    </button>
+                    <span>{state.numBeatsPerMinute}</span>
+                    <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: 1 })}>
+                        <span className="fa-solid fa-plus"></span>
+                    </button>
+                </div>
+                <div>
+                    <button disabled={state.beatDivision === 1} onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: -1})}>
+                        <span className="fa-solid fa-minus"></span>
+                    </button>
+                    <span>{state.beatDivision}</span>
+                    <button onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: 1})}>
+                        <span className="fa-solid fa-plus"></span>
+                    </button>
+                </div>
             </div>
             {state.tracks.map((track, index) => (
                 <>
@@ -60,8 +71,10 @@ export const Controls = () => {
                     />
                 </>
             ))}
-            <div>
-                <button onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>add track</button>
+            <div className="flex flex-col center text-[2.0rem]">
+                <button onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>
+                    <span className="fa-solid fa-circle-plus"></span>
+                </button>
             </div>
         </div>
     );

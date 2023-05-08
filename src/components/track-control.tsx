@@ -7,32 +7,35 @@ export const TrackControl = (props: ITrackControlProps) => {
     } = props;
 
     return (
-        <div>
-            <button onClick={onToggleMute}>{isMuted ? 'muted' : 'not muted'}</button>
-            <select onChange={e => onChangeSample(e.target.value) } name="" id="" value={selectedSampleName}>
+        <div className="flex text-[2.0rem]">
+            <button onClick={onToggleMute}>
+                <span className={`fa-solid fa-volume-${isMuted ? 'xmark' : 'high'}`}></span>
+            </button>
+            <select onChange={e => onChangeSample(e.target.value)} name="" id="" value={selectedSampleName}>
                 {samples.map(({ sampleName }) => (
                     <option value={sampleName}>{sampleName}</option>
                 ))}
             </select>
             <div>
-                <button onClick={onDecrementOnsets}>dec onsets</button>
-                <button onClick={onIncrementOnsets}>inc onsets</button>
+                <button onClick={onDecrementOnsets}>
+                    <span className="fa-solid fa-minus"></span>
+                </button>
+                <button onClick={onIncrementOnsets}>
+                    <span className="fa-solid fa-plus"></span>
+                </button>
             </div>
             <div>
-                <button onClick={onRotateLeft}>rotate left</button>
-                <button onClick={onRotateRight}>rotate right</button>
+                <button onClick={onRotateLeft}>
+                    <span className="fa-solid fa-rotate-left"></span>
+                </button>
+                <button onClick={onRotateRight}>
+                    <span className="fa-solid fa-rotate-right"></span>
+                </button>
             </div>
             <div>
-                <button onClick={onDelete}>delete track</button>
-            </div>
-            <div>
-                {effectiveRhythm.map((isOn, index) => {
-                    const marker = isOn ? 'X' : '_';
-                    if (euclideanRhythm[index]) {
-                        return <span>.{marker}.</span>;
-                    }
-                    return <span> {marker} </span>;
-                })}
+                <button onClick={onDelete}>
+                    <span className="fa-solid fa-circle-xmark"></span>
+                </button>
             </div>
         </div>
     );
