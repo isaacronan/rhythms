@@ -32,7 +32,6 @@ export const SampleService = (props: PropsWithChildren<{ samples: ISample[] }>) 
     return (
         <SampleContext.Provider value={{ play, samples }}>
             {props.children}
-            {JSON.stringify(audioElementSamples)}
             <div style={{ display: 'none' }}>
                 {audioElementSamples.map((sample, index) => (
                     <audio autoPlay={true} ref={node => {

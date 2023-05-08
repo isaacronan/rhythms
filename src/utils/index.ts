@@ -1,4 +1,5 @@
-import { Rhythm } from "../types";
+import { IAppState, Rhythm } from "../types";
+import { Action } from "../types/actions";
 
 export const euclideanRhythm: (stepsOn: number, stepsTotal: number) => Rhythm = (stepsOn, stepsTotal) => {
     const steps = new Array(stepsOn).fill([true]).concat(new Array(stepsTotal - stepsOn).fill([false]));
@@ -19,3 +20,18 @@ export const rotate: (rhythm: Rhythm, numRotations: number) => Rhythm = (rhythm,
     return b.concat(a);
 };
 
+export const createReducerRegistry = () => {
+    const registry: { [actionType: string]: any[] } = {};
+
+    const register: <A extends Action>(actionType: A['type'], reducer: (action: A, state: IAppState) => IAppState) => void = (actionType: Action['type'], reducer: any) => {
+        registry[actionType] = [...(registry[actionType] || []), reducer]
+    };
+
+    const reducer: (appState: IAppState, action: Action) => IAppState = (appState, action) => {
+        const reducers = registry[action.type] || [];
+        const updatedAppState = reducers.reduce((acc, reducer) => reducer(action, acc), appState);
+        return updatedAppState;
+    };
+
+    return { register, reducer };
+};

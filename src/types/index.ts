@@ -10,9 +10,27 @@ export interface ISampleControls {
     samples: ISample[];
 }
 
-export interface Track {
-    rhythm: Rhythm;
+export interface ITrack {
+    numStepsOn: number;
+    numRotations: number;
     sampleName: string;
+    isMuted: boolean;
+    stepOverrideIndices: number[];
+}
+
+export interface ITrackControlProps {
+    samples: ISample[];
+    selectedSampleName: string;
+    isMuted: boolean;
+    euclideanRhythm: Rhythm;
+    effectiveRhythm: Rhythm;
+    onToggleMute: () => void;
+    onChangeSample: (sampleName: string) => void;
+    onDelete: () => void;
+    onRotateRight: () => void;
+    onRotateLeft: () => void;
+    onIncrementOnsets: () => void;
+    onDecrementOnsets: () => void;
 }
 
 export interface ILoop {
@@ -21,7 +39,19 @@ export interface ILoop {
 };
 
 export interface ILoopControls {
-    play: (loop: ILoop) => void;
+    start: (loop: ILoop) => void;
     patch: (loop: ILoop) => void;
+    stop: () => void;
+}
+
+export interface IAppState {
+    numBeats: number
+    numBeatsPerMinute: number;
+    isPlaying: boolean;
+    tracks: ITrack[];
+}
+
+export interface IOrchestrationControls {
+    play: () => void;
     stop: () => void;
 }

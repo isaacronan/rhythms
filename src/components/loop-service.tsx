@@ -19,12 +19,11 @@ export const LoopService = (props: PropsWithChildren) => {
             if (currentStep.current >= currentLoop.current!.steps.length) {
                 currentStep.current = 0;
             }
-            console.log(currentStep.current);
             executeStep();
         }, currentLoop.current!.stepDuration);
     };
 
-    const play = (loop: ILoop) => {
+    const start = (loop: ILoop) => {
         currentLoop.current = loop;
 
         if (stepInterval.current === null) {
@@ -34,9 +33,11 @@ export const LoopService = (props: PropsWithChildren) => {
     };
 
     const patch = (loop: ILoop) => {
-        currentLoop.current = loop;
-        if (stepInterval.current !== null && loop.stepDuration !== currentLoop.current.stepDuration) {
+        if (stepInterval.current !== null && currentLoop.current !== null && loop.stepDuration !== currentLoop.current.stepDuration) {
+            currentLoop.current = loop;
             resetStepInterval();
+        } else {
+            currentLoop.current = loop;
         }
     };
 
@@ -47,7 +48,7 @@ export const LoopService = (props: PropsWithChildren) => {
     };
 
     return (
-        <LoopContext.Provider value={{ play, stop, patch }}>
+        <LoopContext.Provider value={{ start, stop, patch }}>
             {props.children}
         </LoopContext.Provider>
     );

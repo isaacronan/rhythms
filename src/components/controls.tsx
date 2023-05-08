@@ -1,83 +1,52 @@
-import { useLoop } from "./loop-service";
+import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, ToggleTrackMuteAction } from "../types/actions";
+import { useOrchestration } from "./orchestration-service";
 import { useSamples } from "./sample-service";
-import { ILoop, Track } from "../types";
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { euclideanRhythm } from "../utils";
+import { useAppComputed, useAppDispatch, useAppState } from "./state-service";
+import { TrackControl } from "./track-control";
 
 export const Controls = () => {
-    const { play, stop, patch } = useLoop();
-    const { play: playSamples, samples } = useSamples();
-    const bars = useRef(16);
-    const defaultTrack = () => ({ sampleName: 'kick', rhythm: new Array(bars.current).fill(true) });
-    const [tracks, setTracks] = useState<Track[]>([defaultTrack()]);
-
-    const loopConfig = useMemo<ILoop>(() => {
-        const steps = [];
-        for (let i = 0; i < bars.current; i++) {
-            const sampleNames: string[] = [];
-            tracks.forEach(track => {
-                if (track.rhythm[i]) {
-                    sampleNames.push(track.sampleName);
-                }
-            })
-            steps.push(() => playSamples(sampleNames));
-        }
-        return {
-            steps,
-            stepDuration: 1000 * 60 / 200
-        }
-    }, [tracks]);
-
-    useEffect(() => {
-        patch(loopConfig);
-    }, [loopConfig]);
-
-    const handleSampleChange = useMemo(() => (trackIndex: number) => (event: ChangeEvent<HTMLSelectElement>) => {
-        setTracks(prev => prev.map((track, index) => index === trackIndex ? { ...track, sampleName: event.target.value } : track))  
-    }, [samples, tracks]);
-
-    const handleRhythmChange = useMemo(() => (trackIndex: number) => (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value && Number(event.target.value) <= bars.current && Number(event.target.value) > 0) {
-            setTracks(prev => prev.map((track, index) => index === trackIndex ? { ...track, rhythm: euclideanRhythm(Number(event.target.value), bars.current) } : track));
-        }
-    }, [bars, tracks]);
-
-    const sampleControl = useMemo(() => (track: Track, trackIndex: number) => (
-        <div>
-            <select onChange={handleSampleChange(trackIndex)} value={track.sampleName} name="" id="">
-                {samples.map(sample => (
-                    <option value={sample.sampleName}>{sample.sampleName}</option>
-                ))}
-            </select>
-            <input type="number" onChange={handleRhythmChange(trackIndex)} value={track.rhythm.filter(isOn => isOn).length} />
-        </div>
-    ), [samples]);
-
-    const handleBars = (event: ChangeEvent<HTMLInputElement>) => {
-        if (Number(event.target.value) > 0) {
-            bars.current = Number(event.target.value);
-            setTracks(prev => prev.map(track => ({ ...track, rhythm: euclideanRhythm(Math.min(bars.current, track.rhythm.filter(isOn => isOn).length), bars.current)})));
-        }
-    };
+    const { samples } = useSamples();
+    const state = useAppState();
+    const computed = useAppComputed();
+    const dispatch = useAppDispatch();
+    const { play, stop } = useOrchestration();
 
     return (
         <div>
+            <div>{JSON.stringify(state)}</div>
             <div>
-                {tracks.map((track, index) => (
-                    <div>
-                        {sampleControl(track, index)}
-                        {JSON.stringify(track.rhythm)};
-                    </div>
-                ))}
+                <button onClick={play}>play</button>
+                <button onClick={stop}>stop</button>
             </div>
             <div>
-                <button onClick={() => setTracks(prev => ([...prev, defaultTrack()]))}>add track</button>
+                <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>dec</button>
+                <span>{state.numBeats}</span>
+                <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: 1})}>inc</button>
             </div>
             <div>
-                <input type="number" value={bars.current} onChange={handleBars}/>
+                <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: -1 })}>dec</button>
+                <span>{state.numBeatsPerMinute}</span>
+                <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: 1 })}>inc</button>
             </div>
-            <button onClick={() => play(loopConfig)}>play</button>
-            <button onClick={() => stop()}>stop</button>
+            {state.tracks.map((track, index) => (
+                <TrackControl
+                    onIncrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: 1 })}
+                    onDecrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: -1 })}
+                    onRotateLeft={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: -1 })}
+                    onRotateRight={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: 1 })}
+                    onDelete={() => dispatch<DeleteTrackAction>({ type: 'delete-track', trackIndex: index })}
+                    onToggleMute={() => dispatch<ToggleTrackMuteAction>({ type: 'toggle-track-mute', trackIndex: index })}
+                    onChangeSample={(sampleName) => dispatch<ChangeTrackSampleAction>({ type: 'change-track-sample', trackIndex: index, sampleName })}
+                    isMuted={track.isMuted}
+                    samples={samples}
+                    selectedSampleName={track.sampleName}
+                    effectiveRhythm={computed.rhythms[index]}
+                    euclideanRhythm={computed.rhythms[index]}
+                />
+            ))}
+            <div>
+                <button onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>add track</button>
+            </div>
         </div>
     );
 };
