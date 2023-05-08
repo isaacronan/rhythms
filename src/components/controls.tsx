@@ -1,5 +1,6 @@
 import { AddTrackAction, ChangeBeatDivisionAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
 import { useSamples } from "./sample-service";
+import { SequencerChart } from "./sequencer-chart";
 import { useAppDispatch, useAppState } from "./state-service";
 import { TrackControl } from "./track-control";
 
@@ -33,20 +34,27 @@ export const Controls = () => {
                 <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: 1 })}>inc</button>
             </div>
             {state.tracks.map((track, index) => (
-                <TrackControl
-                    onIncrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: 1 })}
-                    onDecrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: -1 })}
-                    onRotateLeft={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: -1 })}
-                    onRotateRight={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: 1 })}
-                    onDelete={() => dispatch<DeleteTrackAction>({ type: 'delete-track', trackIndex: index })}
-                    onToggleMute={() => dispatch<ToggleTrackMuteAction>({ type: 'toggle-track-mute', trackIndex: index })}
-                    onChangeSample={(sampleName) => dispatch<ChangeTrackSampleAction>({ type: 'change-track-sample', trackIndex: index, sampleName })}
-                    isMuted={track.isMuted}
-                    samples={samples}
-                    selectedSampleName={track.sampleName}
-                    effectiveRhythm={track.rhythm}
-                    euclideanRhythm={track.rhythm}
-                />
+                <>
+                    <TrackControl
+                        key={index}
+                        onIncrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: 1 })}
+                        onDecrementOnsets={() => dispatch<ChangeTrackOnsetsAction>({ type: 'change-track-onsets', trackIndex: index, delta: -1 })}
+                        onRotateLeft={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: -1 })}
+                        onRotateRight={() => dispatch<ChangeTrackRotationAction>({ type: 'change-track-rotation', trackIndex: index, delta: 1 })}
+                        onDelete={() => dispatch<DeleteTrackAction>({ type: 'delete-track', trackIndex: index })}
+                        onToggleMute={() => dispatch<ToggleTrackMuteAction>({ type: 'toggle-track-mute', trackIndex: index })}
+                        onChangeSample={(sampleName) => dispatch<ChangeTrackSampleAction>({ type: 'change-track-sample', trackIndex: index, sampleName })}
+                        isMuted={track.isMuted}
+                        samples={samples}
+                        selectedSampleName={track.sampleName}
+                        effectiveRhythm={track.rhythm}
+                        euclideanRhythm={track.rhythm}
+                    />
+                    <SequencerChart
+                        effectiveRhythm={track.rhythm} euclideanRhythm={track.rhythm}
+                        numBeats={state.numBeats} beatDivision={state.beatDivision}
+                    />
+                </>
             ))}
             <div>
                 <button onClick={() => dispatch<AddTrackAction>({ type: 'add-track' })}>add track</button>

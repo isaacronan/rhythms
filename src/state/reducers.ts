@@ -72,7 +72,7 @@ registry.register<ChangeTrackOnsetsAction>('change-track-onsets', (action, state
         ...state,
         tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats * state.beatDivision)({
             ...track,
-            numStepsOn: track.numStepsOn + action.delta
+            numStepsOn: Math.min(Math.max(track.numStepsOn + action.delta, 1), state.numBeats * state.beatDivision)
         }) : track)
     };
 });

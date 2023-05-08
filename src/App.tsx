@@ -1,5 +1,4 @@
 import { SampleService } from './components/sample-service';
-// import { Controls } from './components/controls';
 import { LoopService } from './components/loop-service';
 import { Controls } from './components/controls';
 import { StateService } from './components/state-service';

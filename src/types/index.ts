@@ -34,6 +34,13 @@ export interface ITrackControlProps {
     onDecrementOnsets: () => void;
 }
 
+export interface ISequencerChartProps {
+    euclideanRhythm: Rhythm;
+    effectiveRhythm: Rhythm;
+    numBeats: number;
+    beatDivision: number;
+}
+
 export interface ILoop {
     steps: (() => void)[];
     stepDuration: number;
@@ -46,7 +53,7 @@ export interface ILoopControls {
 }
 
 export interface IAppState {
-    numBeats: number
+    numBeats: number;
     numBeatsPerMinute: number;
     beatDivision: number;
     isPlaying: boolean;
