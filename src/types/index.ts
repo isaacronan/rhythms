@@ -51,8 +51,3 @@ export interface IAppState {
     isPlaying: boolean;
     tracks: ITrack[];
 }
-
-export interface IOrchestrationControls {
-    play: () => void;
-    stop: () => void;
-}
