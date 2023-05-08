@@ -46,7 +46,7 @@ export const SequencerChart = (props: ISequencerChartProps) => {
     useEffect(() => {
         const handleResize = () => {
             const containerWidth = containerRef.current!.clientWidth;
-            setMaxStepsPerRow(Math.floor(containerWidth / (STEP_W + 2 * STEP_H_SPACE)));
+            setMaxStepsPerRow(Math.min(Math.floor(containerWidth / (STEP_W + 2 * STEP_H_SPACE)), props.numBeats * props.beatDivision));
         };
         handleResize();
         window.addEventListener('resize', handleResize);

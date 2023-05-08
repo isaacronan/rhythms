@@ -9,7 +9,7 @@ export const ShiftControl = (props: PropsWithChildren<{
     onPos: () => void,
 }>) => {
     return (
-        <div className=" flex text-[1.6rem] border-[0.1rem] border-[#000000] rounded-[0.4rem]">
+        <div className="flex text-[1.6rem] border-[0.1rem] border-[#000000] rounded-[0.4rem]">
             <button className={`py-[0.5rem] px-[1.0rem]${props.value === undefined ? ' border-r-[0.1rem] border-[#000000]' : ''}`} disabled={props.negDisabled} onClick={props.onNeg}>
                 <span className={`fa-solid fa-${props.iconNeg}`}></span>
             </button>

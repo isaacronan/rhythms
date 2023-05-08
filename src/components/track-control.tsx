@@ -10,7 +10,7 @@ export const TrackControl = (props: ITrackControlProps) => {
     return (
         <div className="flex center text-[1.6rem]">
             <button className="border-[0.1rem] border-[#000000] rounded-[0.4rem] px-[1.0rem] py-[0.5rem]" onClick={onToggleMute}>
-                <span className={`fa-solid fa-volume-${isMuted ? 'xmark' : 'high'}`}></span>
+                <span className={`w-[1.6rem] fa-solid fa-volume-${isMuted ? 'xmark' : 'high'}`}></span>
             </button>
             <select className="px-[0.5rem] py-[0.5rem] grow ml-[1.0rem] border-[0.1rem] border-[#000000] rounded-[0.4rem] px-[1.0rem] appearance-none" onChange={e => onChangeSample(e.target.value)} name="" id="" value={selectedSampleName}>
                 {samples.map(({ sampleName }) => (
