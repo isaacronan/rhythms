@@ -7,7 +7,7 @@ const STEP_H = 35;
 const STEP_H_SPACE = 5;
 const STEP_V_SPACE = 5;
 
-const redraw: (svg: SVGSVGElement, rhythm: Rhythm, numStepsPerRow: number) => void = (svg, rhythm, numStepsPerRow) => {
+const redraw: (svg: SVGSVGElement, rhythm: Rhythm, numStepsPerRow: number, currentStep: number | null) => void = (svg, rhythm, numStepsPerRow, currentStep) => {
     const update = select(svg!).selectAll<SVGRectElement, Rhythm[number]>('rect').data(rhythm);
     const enter = update.enter().append('rect')
         .attr('width', STEP_W).attr('height', STEP_H)
@@ -17,7 +17,8 @@ const redraw: (svg: SVGSVGElement, rhythm: Rhythm, numStepsPerRow: number) => vo
         .attr('x', (d, i) => (STEP_W + 2 * STEP_H_SPACE) * (i % numStepsPerRow) + STEP_H_SPACE)
         .attr('y', (d, i) => (STEP_H + 2 * STEP_V_SPACE) * Math.floor(i / numStepsPerRow) + STEP_V_SPACE)
         .attr('fill', d => d ? 'black' : 'transparent')
-        .attr('stroke', d => d ? 'black' : 'var(--er-gray)');
+        .attr('stroke', d => d ? 'black' : 'var(--er-gray)')
+        .attr('stroke-width', (d, i) => i === currentStep ? 6 : 4);
     update.exit().remove();
 };
 
@@ -39,8 +40,8 @@ export const SequencerChart = (props: ISequencerChartProps) => {
     }, [numBeatsPerRow, props.numBeats]);
 
     useEffect(() => {
-        redraw(svgRef.current!, props.euclideanRhythm, numStepsPerRow);
-    }, [props.effectiveRhythm, props.euclideanRhythm, props.beatDivision, props.numBeats, numStepsPerRow]);
+        redraw(svgRef.current!, props.euclideanRhythm, numStepsPerRow, props.currentStep);
+    }, [props.effectiveRhythm, props.euclideanRhythm, props.beatDivision, props.numBeats, numStepsPerRow, props.currentStep]);
 
     useEffect(() => {
         const handleResize = () => {

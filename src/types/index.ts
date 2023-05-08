@@ -39,6 +39,7 @@ export interface ISequencerChartProps {
     effectiveRhythm: Rhythm;
     numBeats: number;
     beatDivision: number;
+    currentStep: number | null;
 }
 
 export interface ILoop {
@@ -50,6 +51,7 @@ export interface ILoopControls {
     start: (loop: ILoop) => void;
     patch: (loop: ILoop) => void;
     stop: () => void;
+    currentStep: number;
 }
 
 export interface IAppState {

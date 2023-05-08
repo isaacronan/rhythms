@@ -1,4 +1,5 @@
 import { AddTrackAction, ChangeBeatDivisionAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
+import { useLoop } from "./loop-service";
 import { useSamples } from "./sample-service";
 import { SequencerChart } from "./sequencer-chart";
 import { useAppDispatch, useAppState } from "./state-service";
@@ -8,10 +9,12 @@ export const Controls = () => {
     const { samples } = useSamples();
     const state = useAppState();
     const dispatch = useAppDispatch();
+    const { currentStep } = useLoop();
 
     return (
         <div>
             <div>{JSON.stringify(state)}</div>
+            <div>{currentStep}</div>
             <div>
                 <button onClick={() => dispatch<TogglePlayAction>({ type: 'toggle-play' })}>{state.isPlaying ? 'stop' : 'play'}</button>
             </div>
@@ -51,6 +54,7 @@ export const Controls = () => {
                         euclideanRhythm={track.rhythm}
                     />
                     <SequencerChart
+                        currentStep={state.isPlaying ? currentStep : null}
                         effectiveRhythm={track.rhythm} euclideanRhythm={track.rhythm}
                         numBeats={state.numBeats} beatDivision={state.beatDivision}
                     />
