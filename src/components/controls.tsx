@@ -1,4 +1,4 @@
-import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
+import { AddTrackAction, ChangeBeatDivisionAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
 import { useSamples } from "./sample-service";
 import { useAppDispatch, useAppState } from "./state-service";
 import { TrackControl } from "./track-control";
@@ -15,12 +15,20 @@ export const Controls = () => {
                 <button onClick={() => dispatch<TogglePlayAction>({ type: 'toggle-play' })}>{state.isPlaying ? 'stop' : 'play'}</button>
             </div>
             <div>
-                <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>dec</button>
+                <div>beats</div>
+                <button disabled={state.numBeats === 1} onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: -1})}>dec</button>
                 <span>{state.numBeats}</span>
                 <button onClick={() => dispatch<ChangeNumBeatsAction>({ type: 'change-num-beats', delta: 1})}>inc</button>
             </div>
             <div>
-                <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: -1 })}>dec</button>
+                <div>division</div>
+                <button disabled={state.beatDivision === 1} onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: -1})}>dec</button>
+                <span>{state.beatDivision}</span>
+                <button onClick={() => dispatch<ChangeBeatDivisionAction>({ type: 'change-beat-division', delta: 1})}>inc</button>
+            </div>
+            <div>
+                <div>bpm</div>
+                <button disabled={state.numBeatsPerMinute === 1} onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: -1 })}>dec</button>
                 <span>{state.numBeatsPerMinute}</span>
                 <button onClick={() => dispatch<ChangeNumBeatsPerMinuteAction>({ type: 'change-num-beats-per-minute', delta: 1 })}>inc</button>
             </div>

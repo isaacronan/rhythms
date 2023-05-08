@@ -1,4 +1,4 @@
-import { ITrackControlProps } from "../types";
+import { ITrack, ITrackControlProps } from "../types";
 
 export const TrackControl = (props: ITrackControlProps) => {
     const {

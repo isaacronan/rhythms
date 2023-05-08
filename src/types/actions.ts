@@ -10,6 +10,10 @@ export interface ChangeNumBeatsPerMinuteAction extends Action<'change-num-beats-
     delta: number;
 }
 
+export interface ChangeBeatDivisionAction extends Action<'change-beat-division'> {
+    delta: number;
+}
+
 export interface ToggleTrackMuteAction extends Action<'toggle-track-mute'> {
     trackIndex: number;
 }

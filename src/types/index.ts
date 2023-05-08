@@ -48,6 +48,7 @@ export interface ILoopControls {
 export interface IAppState {
     numBeats: number
     numBeatsPerMinute: number;
+    beatDivision: number;
     isPlaying: boolean;
     tracks: ITrack[];
 }

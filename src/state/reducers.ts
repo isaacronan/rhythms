@@ -1,5 +1,5 @@
 import { defaultTrack } from ".";
-import { AddTrackAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
+import { AddTrackAction, ChangeBeatDivisionAction, ChangeNumBeatsAction, ChangeNumBeatsPerMinuteAction, ChangeTrackOnsetsAction, ChangeTrackRotationAction, ChangeTrackSampleAction, DeleteTrackAction, TogglePlayAction, ToggleTrackMuteAction } from "../types/actions";
 import { createReducerRegistry, rhythmRepair } from "../utils";
 
 const registry = createReducerRegistry();
@@ -9,7 +9,7 @@ registry.register<ChangeNumBeatsAction>('change-num-beats', (action, state) => {
     return {
         ...state,
         numBeats,
-        tracks: state.tracks.map(rhythmRepair(numBeats))
+        tracks: state.tracks.map(rhythmRepair(numBeats * state.beatDivision))
     };
 });
 
@@ -17,6 +17,15 @@ registry.register<ChangeNumBeatsPerMinuteAction>('change-num-beats-per-minute', 
     return {
         ...state,
         numBeatsPerMinute: state.numBeatsPerMinute + action.delta
+    };
+});
+
+registry.register<ChangeBeatDivisionAction>('change-beat-division', (action, state) => {
+    const beatDivision = state.beatDivision + action.delta;
+    return {
+        ...state,
+        beatDivision,
+        tracks: state.tracks.map(rhythmRepair(state.numBeats * beatDivision))
     };
 });
 
@@ -30,7 +39,7 @@ registry.register<ToggleTrackMuteAction>('toggle-track-mute', (action, state) =>
 registry.register<AddTrackAction>('add-track', (action, state) => {
     return {
         ...state,
-        tracks: [...state.tracks, rhythmRepair(state.numBeats)(defaultTrack)]
+        tracks: [...state.tracks, rhythmRepair(state.numBeats * state.beatDivision)(defaultTrack)]
     };
 });
 
@@ -51,9 +60,9 @@ registry.register<ChangeTrackSampleAction>('change-track-sample', (action, state
 registry.register<ChangeTrackRotationAction>('change-track-rotation', (action, state) => {
     return {
         ...state,
-        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats)({
+        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats * state.beatDivision)({
             ...track,
-            numRotations: (track.numRotations + state.numBeats + action.delta) % state.numBeats
+            numRotations: (track.numRotations + state.numBeats * state.beatDivision + action.delta) % (state.numBeats * state.beatDivision)
         }) : track)
     };
 });
@@ -61,7 +70,7 @@ registry.register<ChangeTrackRotationAction>('change-track-rotation', (action, s
 registry.register<ChangeTrackOnsetsAction>('change-track-onsets', (action, state) => {
     return {
         ...state,
-        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats)({
+        tracks: state.tracks.map((track, index) => index === action.trackIndex ? rhythmRepair(state.numBeats * state.beatDivision)({
             ...track,
             numStepsOn: track.numStepsOn + action.delta
         }) : track)
