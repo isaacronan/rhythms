@@ -1,4 +1,5 @@
 import { ITrack, ITrackControlProps } from "../types";
+import { ShiftControl } from "./shift-control";
 
 export const TrackControl = (props: ITrackControlProps) => {
     const {
@@ -7,36 +8,32 @@ export const TrackControl = (props: ITrackControlProps) => {
     } = props;
 
     return (
-        <div className="flex text-[2.0rem]">
-            <button onClick={onToggleMute}>
+        <div className="flex center text-[1.6rem]">
+            <button className="border-[0.1rem] border-[#000000] rounded-[0.4rem] px-[1.0rem] py-[0.5rem]" onClick={onToggleMute}>
                 <span className={`fa-solid fa-volume-${isMuted ? 'xmark' : 'high'}`}></span>
             </button>
-            <select onChange={e => onChangeSample(e.target.value)} name="" id="" value={selectedSampleName}>
+            <select className="px-[0.5rem] py-[0.5rem] grow ml-[1.0rem] border-[0.1rem] border-[#000000] rounded-[0.4rem] px-[1.0rem] appearance-none" onChange={e => onChangeSample(e.target.value)} name="" id="" value={selectedSampleName}>
                 {samples.map(({ sampleName }) => (
                     <option value={sampleName}>{sampleName}</option>
                 ))}
             </select>
-            <div>
-                <button onClick={onDecrementOnsets}>
-                    <span className="fa-solid fa-minus"></span>
-                </button>
-                <button onClick={onIncrementOnsets}>
-                    <span className="fa-solid fa-plus"></span>
-                </button>
+            <div className="ml-[1.0rem]">
+                <ShiftControl
+                    iconNeg="minus" iconPos="plus" negDisabled={false}
+                    onNeg={onDecrementOnsets}
+                    onPos={onIncrementOnsets}
+                />
             </div>
-            <div>
-                <button onClick={onRotateLeft}>
-                    <span className="fa-solid fa-rotate-left"></span>
-                </button>
-                <button onClick={onRotateRight}>
-                    <span className="fa-solid fa-rotate-right"></span>
-                </button>
+            <div className="ml-[1.0rem]">
+                <ShiftControl
+                    iconNeg="rotate-left" iconPos="rotate-right" negDisabled={false}
+                    onNeg={onRotateLeft}
+                    onPos={onRotateRight}
+                />
             </div>
-            <div>
-                <button onClick={onDelete}>
-                    <span className="fa-solid fa-circle-xmark"></span>
-                </button>
-            </div>
+            <button className="mx-[1.0rem]" onClick={onDelete}>
+                <span className="fa-solid fa-circle-xmark"></span>
+            </button>
         </div>
     );
 };

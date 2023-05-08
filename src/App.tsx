@@ -3,6 +3,8 @@ import { LoopService } from './components/loop-service';
 import { Controls } from './components/controls';
 import { StateService } from './components/state-service';
 import { OrchestrationService } from './components/orchestration-service';
+import { Tracks } from './components/tracks';
+import { Viz } from './components/viz';
 
 function App() {
   return (
@@ -14,7 +16,14 @@ function App() {
       <LoopService>
         <StateService>
           <OrchestrationService>
-            <Controls />
+            <div className="h-screen flex flex-col p-[0.5rem]">
+              <h1 className="text-[2.4rem]">Euclidean Rhythm Generator</h1>
+              <Controls />
+              <Viz />
+              <div className="grow overflow-y-auto">
+                <Tracks />
+              </div>
+            </div>
           </OrchestrationService>
         </StateService>
       </LoopService>
