@@ -28,8 +28,8 @@ export const SequencerChart = (props: ISequencerChartProps) => {
     const [maxStepsPerRow, setMaxStepsPerRow] = useState(0);
 
     const numBeatsPerRow = useMemo(() => {
-        return Math.max(Math.floor(maxStepsPerRow / props.beatDivision), 1)
-    }, [maxStepsPerRow, props.beatDivision]);
+        return Math.max(Math.floor(Math.min(maxStepsPerRow, props.numBeats * props.beatDivision) / props.beatDivision), 1)
+    }, [maxStepsPerRow, props.beatDivision, props.numBeats]);
     
     const numStepsPerRow = useMemo(() => {
         return numBeatsPerRow * props.beatDivision;
@@ -46,7 +46,7 @@ export const SequencerChart = (props: ISequencerChartProps) => {
     useEffect(() => {
         const handleResize = () => {
             const containerWidth = containerRef.current!.clientWidth;
-            setMaxStepsPerRow(Math.min(Math.floor(containerWidth / (STEP_W + 2 * STEP_H_SPACE)), props.numBeats * props.beatDivision));
+            setMaxStepsPerRow(Math.min(Math.floor(containerWidth / (STEP_W + 2 * STEP_H_SPACE))));
         };
         handleResize();
         window.addEventListener('resize', handleResize);
