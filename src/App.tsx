@@ -16,10 +16,10 @@ function App() {
       <LoopService>
         <StateService>
           <OrchestrationService>
-            <div className="h-screen p-[0.5rem] flex flex-col">
+            <div className="h-screen p-[0.5rem] flex flex-col mx-auto max-w-[1000px]">
               <h1 className="text-[2.4rem]">Euclidean Rhythm Generator</h1>
               <div className="flex flex-col min-[768px]:flex-row grow overflow-y-hidden">
-                <div className="min-[768px]:w-[400px]">
+                <div className="min-[768px]:w-[300px]">
                   <Controls />
                   <Viz />
                 </div>
