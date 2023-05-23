@@ -9,7 +9,7 @@ import sampleKick from '../assets/kick.wav';
 import sampleSnare from '../assets/snare.wav';
 import sampleHat from '../assets/hihat.wav';
 
-function App() {
+export const App = () => {
   return (
     <SampleService samples={[
       { sampleName: 'kick', assetPath: sampleKick },
