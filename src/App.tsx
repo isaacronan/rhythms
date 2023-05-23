@@ -5,13 +5,16 @@ import { StateService } from './components/state-service';
 import { OrchestrationService } from './components/orchestration-service';
 import { Tracks } from './components/tracks';
 import { Viz } from './components/viz';
+import sampleKick from '../assets/kick.wav';
+import sampleSnare from '../assets/snare.wav';
+import sampleHat from '../assets/hihat.wav';
 
 function App() {
   return (
     <SampleService samples={[
-      { sampleName: 'kick', assetPath: '/kick.wav' },
-      { sampleName: 'snare', assetPath: '/snare.wav' },
-      { sampleName: 'hat', assetPath: '/hihat.wav' }
+      { sampleName: 'kick', assetPath: sampleKick },
+      { sampleName: 'snare', assetPath: sampleSnare },
+      { sampleName: 'hat', assetPath: sampleHat }
     ]}>
       <LoopService>
         <StateService>

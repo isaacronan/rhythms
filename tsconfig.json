@@ -17,10 +17,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-, "src/components/orchestration-service.tsx"  ]
+    "src",
+    "index.d.ts"
+  ]
 }
