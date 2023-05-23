@@ -2,7 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const prodPublicPath = '/rhythms';
+const prodPublicPath = '/rhythms/';
 
 module.exports = (env, argv) => {
     return {
